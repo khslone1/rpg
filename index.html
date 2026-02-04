@@ -36,13 +36,44 @@
 
         body::before {
             content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: -1;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85); z-index: -1;
         }
 
-        /* === 1. GATE SCREEN === */
+        /* === 1. TOP NAVIGATION (MOBILE ONLY) === */
+        /* 기본적으로 숨김, 모바일에서만 표시 */
+        .top-nav {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 200;
+            justify-content: center;
+            padding: 10px 0;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .top-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 8px 15px;
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .top-btn.active {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+            background: rgba(197, 160, 89, 0.1);
+            font-weight: bold;
+        }
+
+        /* === 2. GATE SCREEN === */
         #gate-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 9999;
@@ -67,7 +98,7 @@
         .enter-btn { background: transparent; color: var(--text-accent); border: 2px solid var(--text-accent); padding: 15px 70px; font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: all 0.5s; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(197, 160, 89, 0.2); }
         .enter-btn:hover { background: var(--text-accent); color: #000; box-shadow: 0 0 50px rgba(197, 160, 89, 0.6); }
 
-        /* === 2. SIDEBAR NAVIGATION === */
+        /* === 3. SIDEBAR NAVIGATION (PC) === */
         .sidebar-nav {
             position: fixed; right: 30px; top: 50%; transform: translateY(-50%);
             display: flex; flex-direction: column; gap: 15px; z-index: 100;
@@ -103,7 +134,7 @@
         .sub-link:hover { color: #e0e0e0; background: rgba(50, 50, 50, 0.9); border-color: #555; transform: translateX(-3px); }
         .sub-link.active-sub { color: #121212; border-right-color: var(--text-accent); background: var(--text-accent); font-weight: bold; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
 
-        /* === MAIN CONTENT === */
+        /* === 4. MAIN CONTENT === */
         #main-wrapper { opacity: 0; transition: opacity 1s ease 0.8s; padding: 60px 0; width: 100%; display: flex; justify-content: center; }
         #main-wrapper.visible { opacity: 1; }
         
@@ -115,8 +146,20 @@
         }
         .content-panel.active { display: block; }
 
-        @media (max-width: 1450px) { .content-panel { margin-right: 320px; } }
-        @media (max-width: 1100px) { .sidebar-nav { display: none; } .content-panel { margin: 0 20px; } }
+        /* 반응형: 모바일 화면 (너비 1100px 이하) */
+        @media (max-width: 1100px) {
+            /* 사이드바 숨김 */
+            .sidebar-nav { display: none !important; }
+            /* 상단 메뉴 표시 */
+            .top-nav { display: flex; }
+            /* 컨텐츠 패널 상단 여백 추가 (상단 메뉴 때문) */
+            #main-wrapper { padding-top: 80px; }
+            .content-panel { margin: 0 10px; padding: 30px 20px; }
+            
+            /* 게이트 화면 조정 (모바일에서 너무 크지 않게) */
+            .gate-img-box, .gate-placeholder { width: 100px; height: 300px; } 
+            .gate-title { font-size: 2rem; }
+        }
 
         h1, h2, h3 { font-family: 'Nanum Myeongjo', serif; margin: 0 0 15px 0; letter-spacing: -0.02em; }
         h2, h3 { 
@@ -151,37 +194,12 @@
         th { background: var(--bg-sub); color: var(--text-accent); width: 15%; padding: 15px; text-align: center; border: 1px solid #333; border-right: none; font-weight: bold; font-family: 'Nanum Myeongjo', serif; }
         td { background: rgba(40, 40, 40, 0.6); color: #ccc; padding: 15px; border: 1px solid #333; border-left: 1px solid #444; }
 
-        /* === Class Specific Styles (슬라이더 및 여백 개선) === */
-        #warrior-viewport {
-            width: 100%;
-            overflow: hidden; 
-        }
-        #warrior-slider {
-            display: flex;
-            width: 300%; 
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        
-        .class-section { 
-            flex: 0 0 33.3333%; /* 1/3 너비 정확히 지정 */
-            width: 33.3333%; 
-            position: relative; 
-            z-index: 1; 
-            /* 1. 양옆 공백 추가: 페이지 간 경계 구분 */
-            padding: 0 40px 50px 40px; 
-            box-sizing: border-box;
-        }
-        
-        .class-bg { 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; height: auto; 
-            z-index: -1; opacity: 0.4; pointer-events: none; overflow: hidden;
-        }
-        .class-bg img { 
-            width: 100%; height: auto; display: block;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0)); 
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0)); 
-        }
+        /* === Class Specific Styles === */
+        #warrior-viewport { width: 100%; overflow: hidden; }
+        #warrior-slider { display: flex; width: 300%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .class-section { flex: 0 0 33.3333%; width: 33.3333%; position: relative; z-index: 1; padding: 0 40px 50px 40px; box-sizing: border-box; flex-shrink: 0; }
+        .class-bg { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: -1; opacity: 0.4; pointer-events: none; overflow: hidden; }
+        .class-bg img { width: 100%; height: auto; display: block; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0)); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0)); }
         
         .sub-nav { display: flex; gap: 15px; margin-bottom: 40px; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; justify-content: center;}
         .sub-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; padding: 10px 25px; font-weight: bold; transition: color 0.3s; }
@@ -195,53 +213,21 @@
 
         .skill-group-title { font-size: 1.1rem; color: #888; border-bottom: 1px dashed #444; padding-bottom: 5px; margin-bottom: 15px; display: block; margin-top: 40px; }
 
-        /* 공통 기술 */
         .common-skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .skill-item-common { background: rgba(30, 30, 30, 0.5); border: 1px solid #444; padding: 10px 12px; transition: all 0.3s; border-left: 3px solid #666; }
         .skill-item-common:hover { background: rgba(40, 40, 40, 0.8); }
         .skill-item-common .skill-name { color: #aaa; font-size: 0.95rem; margin-bottom: 2px; font-weight: bold; }
         .skill-item-common .skill-desc { color: #777; font-size: 0.8rem; }
 
-        /* 고유 기술 */
         .unique-skill-grid { display: grid; grid-template-columns: 1fr; gap: 15px; } 
         .skill-item-unique { background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(20, 20, 20, 0.95)); border: 1px solid #555; padding: 25px; transition: all 0.3s; border-left: 4px solid var(--text-accent); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .skill-item-unique:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(197, 160, 89, 0.15); border-color: var(--text-accent); }
         .skill-name { font-family: 'Nanum Myeongjo', serif; font-weight: bold; font-size: 1.3rem; display: block; margin-bottom: 8px; color: var(--text-primary); }
         .skill-desc { font-size: 1rem; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; color: #ccc; }
 
-        /* 2. 고유 능력 (Simple Label & 설명 추가 & 위치 이동) */
-        .special-ability-simple {
-            display: block;
-            background: rgba(139, 69, 19, 0.2);
-            border: 1px solid var(--highlight);
-            padding: 20px;
-            /* 2. 위치 조정: 공통과 고유 사이, 이미지 안 가리게 여백 추가 */
-            margin: 60px 0 40px 0; 
-            border-radius: 4px;
-            text-align: center;
-        }
-        .special-ability-simple .sa-label {
-            display: block;
-            font-size: 0.8rem;
-            color: #aaa;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-        .special-ability-simple .sa-name {
-            display: block;
-            font-size: 1.4rem;
-            color: var(--highlight);
-            font-family: 'Nanum Myeongjo', serif;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .special-ability-simple .sa-desc {
-            font-size: 0.95rem;
-            color: #ccc;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
+        .special-ability-simple { display: inline-flex; align-items: center; background: rgba(139, 69, 19, 0.2); border: 1px solid var(--highlight); padding: 10px 20px; margin: 30px 0 10px 0; border-radius: 4px; }
+        .special-ability-simple .sa-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; margin-right: 15px; font-weight: bold; letter-spacing: 1px; }
+        .special-ability-simple .sa-name { font-size: 1.1rem; color: var(--highlight); font-family: 'Nanum Myeongjo', serif; font-weight: bold; }
 
     </style>
 </head>
@@ -252,6 +238,11 @@
         src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1602374418&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
         </iframe>
     </div>
+
+    <nav class="top-nav">
+        <button class="top-btn" id="t-system" onclick="switchMainTab('system')">가이드</button>
+        <button class="top-btn" id="t-warrior" onclick="switchMainTab('warrior')">전사</button>
+        </nav>
 
     <div id="gate-screen">
         <div class="char-panorama">
@@ -491,7 +482,6 @@
     </div>
 
     <script>
-        // (기존 특성 데이터 유지)
         const traitDB = {
             '운동': ['기능 미달. 일반인보다 서툴러 탈진이나 부상의 위험이 큽니다.', '평범. 일상적인 육체 활동은 무리 없이 수행합니다.', '숙련. 문을 파손하거나 바위를 밀어낼 수 있습니다.', '능숙. 추격전이나 수영 등 장기적인 체력 소모를 견딥니다.', '달인. 육체적 고통을 무시하고 물리적 한계를 돌파합니다.'],
             '민첩': ['기능 미달. 소음을 내어 들키거나 추락할 위험이 큽니다.', '평범. 가벼운 장애물은 넘을 수 있습니다.', '숙련. 좁은 틈을 통과하고 안전하게 낙법을 취합니다.', '능숙. 은밀하게 침투하여 기습에 성공합니다.', '달인. 어떤 지형이든 소리 없이 완벽하게 이동합니다.'],
@@ -533,21 +523,34 @@
             document.getElementById('main-wrapper').classList.add('visible');
             document.getElementById('sidebar').classList.add('visible');
 
-            // 1. 오디오 재생 문제 해결 (클릭 직후 시도)
             if(scWidget) {
                 scWidget.play();
             }
-            audioPlayQueue = true; // 아직 로딩 안됐으면 READY 때 재생
+            audioPlayQueue = true;
 
             switchMainTab('system', document.querySelector('#btn-system'));
         }
 
         function switchMainTab(tabId, btn) {
+            // 버튼 상태 처리
             if(btn) {
+                // 사이드바 버튼
                 document.querySelectorAll('.side-btn').forEach(b => {
                     if(!b.classList.contains('disabled')) b.classList.remove('active');
                 });
                 btn.classList.add('active');
+                
+                // 모바일 상단 버튼
+                document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
+                const mobileBtn = document.getElementById('t-' + tabId);
+                if(mobileBtn) mobileBtn.classList.add('active');
+            } else {
+                // 버튼 없이 ID로 호출된 경우 역추적
+                const mobileBtn = document.getElementById('t-' + tabId);
+                if(mobileBtn) {
+                    document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
+                    mobileBtn.classList.add('active');
+                }
             }
 
             if(tabId === 'system') {
@@ -568,8 +571,6 @@
 
         function toggleWarriorMenu() {
             const submenu = document.getElementById('warrior-submenu');
-            const warriorBtn = document.getElementById('btn-warrior');
-            
             if(submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
             } else {
@@ -578,11 +579,16 @@
         }
 
         function goToClass(classId) {
+            // PC 사이드바 활성화
             const warriorBtn = document.getElementById('btn-warrior');
             document.querySelectorAll('.side-btn').forEach(b => {
                if(b !== warriorBtn) b.classList.remove('active');
             });
             warriorBtn.classList.add('active');
+            
+            // 모바일 상단바 활성화
+            document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('t-warrior').classList.add('active');
 
             document.getElementById('system').style.display = 'none';
             document.getElementById('system').classList.remove('active');
@@ -609,8 +615,8 @@
             let translateX = 0;
             // 3. 슬라이더 로직 정상화 (33.33%씩 이동)
             if(classId === 'fighter') translateX = 0;
-            else if(classId === 'paladin') translateX = -33.3333;
-            else if(classId === 'vision') translateX = -66.6666;
+            else if(classId === 'paladin') translateX = -33.3333; // 1/3
+            else if(classId === 'vision') translateX = -66.6666;  // 2/3
             
             slider.style.transform = `translateX(${translateX}%)`;
         }

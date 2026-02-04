@@ -36,42 +36,40 @@
 
         body::before {
             content: '';
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85); z-index: -1;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
         }
 
-        /* === 1. TOP NAVIGATION (MOBILE ONLY) === */
-        /* 기본적으로 숨김, 모바일에서만 표시 */
-        .top-nav {
-            display: none; 
+        /* === 1. TOP NAVIGATION === */
+        .top-nav-bar {
             position: fixed;
             top: 0; left: 0; width: 100%;
+            height: 60px;
             background: rgba(10, 10, 10, 0.95);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 200;
+            border-bottom: 1px solid #333;
+            z-index: 500;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 10px 0;
-            gap: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transform: translateY(-100%);
+            transition: transform 0.5s ease;
         }
+        
+        .top-nav-bar.visible { transform: translateY(0); }
+
+        .top-menu { display: flex; gap: 5px; }
 
         .top-btn {
-            background: transparent;
-            border: 1px solid #444;
-            color: #888;
-            padding: 8px 15px;
-            font-family: 'Nanum Myeongjo', serif;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            background: transparent; border: 1px solid transparent; color: #888;
+            padding: 8px 20px; font-family: 'Nanum Myeongjo', serif; font-size: 1.1rem;
+            cursor: pointer; transition: all 0.3s; border-radius: 2px;
         }
-
-        .top-btn.active {
-            border-color: var(--text-accent);
-            color: var(--text-accent);
-            background: rgba(197, 160, 89, 0.1);
-            font-weight: bold;
-        }
+        .top-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .top-btn.active { color: var(--text-accent); border-bottom: 2px solid var(--text-accent); font-weight: bold; background: linear-gradient(to top, rgba(197, 160, 89, 0.1), transparent); }
+        .top-btn.disabled { opacity: 0.4; cursor: default; font-size: 0.9rem; }
 
         /* === 2. GATE SCREEN === */
         #gate-screen {
@@ -83,8 +81,10 @@
         #gate-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .char-panorama {
-            display: flex; gap: 20px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: auto; min-width: 150%; justify-content: center; opacity: 0.5; pointer-events: none;
+            display: flex; gap: 20px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: auto; min-width: 150%; justify-content: center;
+            opacity: 0.5; pointer-events: none;
             mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
             filter: grayscale(80%) sepia(20%);
@@ -98,7 +98,7 @@
         .enter-btn { background: transparent; color: var(--text-accent); border: 2px solid var(--text-accent); padding: 15px 70px; font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: all 0.5s; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(197, 160, 89, 0.2); }
         .enter-btn:hover { background: var(--text-accent); color: #000; box-shadow: 0 0 50px rgba(197, 160, 89, 0.6); }
 
-        /* === 3. SIDEBAR NAVIGATION (PC) === */
+        /* === 3. SIDEBAR NAVIGATION === */
         .sidebar-nav {
             position: fixed; right: 30px; top: 50%; transform: translateY(-50%);
             display: flex; flex-direction: column; gap: 15px; z-index: 100;
@@ -135,7 +135,11 @@
         .sub-link.active-sub { color: #121212; border-right-color: var(--text-accent); background: var(--text-accent); font-weight: bold; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
 
         /* === 4. MAIN CONTENT === */
-        #main-wrapper { opacity: 0; transition: opacity 1s ease 0.8s; padding: 60px 0; width: 100%; display: flex; justify-content: center; }
+        #main-wrapper { 
+            opacity: 0; transition: opacity 1s ease 0.8s; 
+            padding: 80px 0 60px; /* 상단 여백 확보 */
+            width: 100%; display: flex; justify-content: center; 
+        }
         #main-wrapper.visible { opacity: 1; }
         
         .content-panel { 
@@ -146,30 +150,14 @@
         }
         .content-panel.active { display: block; }
 
-        /* 반응형: 모바일 화면 (너비 1100px 이하) */
-        @media (max-width: 1100px) {
-            /* 사이드바 숨김 */
-            .sidebar-nav { display: none !important; }
-            /* 상단 메뉴 표시 */
-            .top-nav { display: flex; }
-            /* 컨텐츠 패널 상단 여백 추가 (상단 메뉴 때문) */
-            #main-wrapper { padding-top: 80px; }
-            .content-panel { margin: 0 10px; padding: 30px 20px; }
-            
-            /* 게이트 화면 조정 (모바일에서 너무 크지 않게) */
-            .gate-img-box, .gate-placeholder { width: 100px; height: 300px; } 
-            .gate-title { font-size: 2rem; }
+        @media (max-width: 1450px) { .content-panel { margin-right: 320px; } }
+        @media (max-width: 1100px) { 
+            .sidebar-nav { display: none !important; } 
+            .content-panel { margin: 0 15px; } 
         }
 
         h1, h2, h3 { font-family: 'Nanum Myeongjo', serif; margin: 0 0 15px 0; letter-spacing: -0.02em; }
-        h2, h3 { 
-            color: var(--text-accent); 
-            border-bottom: 2px solid var(--highlight);
-            padding-bottom: 10px; 
-            display: inline-block; 
-            margin-bottom: 30px; 
-            margin-top: 50px;
-        }
+        h2, h3 { color: var(--text-accent); border-bottom: 2px solid var(--highlight); padding-bottom: 10px; display: inline-block; margin-bottom: 30px; margin-top: 50px; }
         h2 { font-size: 2rem; } h3 { font-size: 1.8rem; } 
 
         .bgm-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0.01; }
@@ -225,9 +213,29 @@
         .skill-name { font-family: 'Nanum Myeongjo', serif; font-weight: bold; font-size: 1.3rem; display: block; margin-bottom: 8px; color: var(--text-primary); }
         .skill-desc { font-size: 1rem; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; color: #ccc; }
 
-        .special-ability-simple { display: inline-flex; align-items: center; background: rgba(139, 69, 19, 0.2); border: 1px solid var(--highlight); padding: 10px 20px; margin: 30px 0 10px 0; border-radius: 4px; }
-        .special-ability-simple .sa-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; margin-right: 15px; font-weight: bold; letter-spacing: 1px; }
-        .special-ability-simple .sa-name { font-size: 1.1rem; color: var(--highlight); font-family: 'Nanum Myeongjo', serif; font-weight: bold; }
+        /* 고유 능력 (Fixed Layout) */
+        .special-ability-simple {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 69, 19, 0.2);
+            border: 1px solid var(--highlight);
+            padding: 20px;
+            margin: 40px auto;
+            border-radius: 4px;
+            max-width: 80%;
+            text-align: center;
+        }
+        .special-ability-simple .sa-label {
+            font-size: 0.8rem; color: #aaa; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; margin-bottom: 5px;
+        }
+        .special-ability-simple .sa-name {
+            font-size: 1.4rem; color: var(--highlight); font-family: 'Nanum Myeongjo', serif; font-weight: bold; margin-bottom: 5px;
+        }
+        .special-ability-simple .sa-desc {
+            font-size: 0.95rem; color: #ccc; font-family: 'Noto Sans KR', sans-serif;
+        }
 
     </style>
 </head>
@@ -239,10 +247,14 @@
         </iframe>
     </div>
 
-    <nav class="top-nav">
-        <button class="top-btn" id="t-system" onclick="switchMainTab('system')">가이드</button>
-        <button class="top-btn" id="t-warrior" onclick="switchMainTab('warrior')">전사</button>
-        </nav>
+    <nav class="top-nav-bar" id="topNav">
+        <div class="top-menu">
+            <button class="top-btn active" id="top-btn-system" onclick="switchMainTab('system')">가이드</button>
+            <button class="top-btn" id="top-btn-warrior" onclick="goToClass('fighter')">전사</button>
+            <button class="top-btn disabled">마법사</button>
+            <button class="top-btn disabled">도적</button>
+        </div>
+    </nav>
 
     <div id="gate-screen">
         <div class="char-panorama">
@@ -522,6 +534,7 @@
 
             document.getElementById('main-wrapper').classList.add('visible');
             document.getElementById('sidebar').classList.add('visible');
+            document.getElementById('topNav').classList.add('visible'); // Show Top Nav
 
             if(scWidget) {
                 scWidget.play();
@@ -532,63 +545,44 @@
         }
 
         function switchMainTab(tabId, btn) {
-            // 버튼 상태 처리
-            if(btn) {
-                // 사이드바 버튼
-                document.querySelectorAll('.side-btn').forEach(b => {
-                    if(!b.classList.contains('disabled')) b.classList.remove('active');
-                });
-                btn.classList.add('active');
-                
-                // 모바일 상단 버튼
-                document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
-                const mobileBtn = document.getElementById('t-' + tabId);
-                if(mobileBtn) mobileBtn.classList.add('active');
-            } else {
-                // 버튼 없이 ID로 호출된 경우 역추적
-                const mobileBtn = document.getElementById('t-' + tabId);
-                if(mobileBtn) {
-                    document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
-                    mobileBtn.classList.add('active');
-                }
-            }
-
-            if(tabId === 'system') {
+            // 사이드바 버튼 & 상단 버튼 동기화
+            if (tabId === 'system') {
+                updateActiveBtn('#btn-system', '#top-btn-system');
                 document.getElementById('warrior-submenu').classList.remove('open');
+                
+                document.getElementById('system').style.display = 'block';
+                setTimeout(() => document.getElementById('system').classList.add('active'), 10);
+                document.getElementById('warrior').style.display = 'none';
+                document.getElementById('warrior').classList.remove('active');
+                
+            } else if (tabId === 'warrior') {
+                updateActiveBtn('#btn-warrior', '#top-btn-warrior');
+                goToClass('fighter'); 
             }
+        }
 
-            document.querySelectorAll('.content-panel').forEach(p => {
-                p.classList.remove('active');
-                p.style.display = 'none';
-            });
-            
-            const target = document.getElementById(tabId);
-            if(target) {
-                target.style.display = 'block';
-                setTimeout(() => target.classList.add('active'), 10);
-            }
+        function updateActiveBtn(sideId, topId) {
+            document.querySelectorAll('.side-btn, .top-btn').forEach(b => b.classList.remove('active'));
+            const sBtn = document.querySelector(sideId);
+            const tBtn = document.querySelector(topId);
+            if(sBtn) sBtn.classList.add('active');
+            if(tBtn) tBtn.classList.add('active');
         }
 
         function toggleWarriorMenu() {
             const submenu = document.getElementById('warrior-submenu');
+            const warriorBtn = document.getElementById('btn-warrior');
+            
             if(submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
             } else {
                 submenu.classList.add('open');
+                switchMainTab('warrior', warriorBtn);
             }
         }
 
         function goToClass(classId) {
-            // PC 사이드바 활성화
-            const warriorBtn = document.getElementById('btn-warrior');
-            document.querySelectorAll('.side-btn').forEach(b => {
-               if(b !== warriorBtn) b.classList.remove('active');
-            });
-            warriorBtn.classList.add('active');
-            
-            // 모바일 상단바 활성화
-            document.querySelectorAll('.top-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('t-warrior').classList.add('active');
+            updateActiveBtn('#btn-warrior', '#top-btn-warrior');
 
             document.getElementById('system').style.display = 'none';
             document.getElementById('system').classList.remove('active');
